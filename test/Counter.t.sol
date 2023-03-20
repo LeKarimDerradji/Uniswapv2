@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/Counter.sol";
+import "../src/UniswapV2Pair.sol";
 
-contract CounterTest is Test {
-    Counter public counter;
+contract UniswapV2Pair is Test {
+    UniswapV2Pair public uniswapv2pair;
 
     function setUp() public {
         counter = new Counter();
