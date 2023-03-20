@@ -11,7 +11,7 @@ interface IERC20 {
     function transfer(address to, uint256 amount) external;
 }
 
-contract UniswapV2Pair is ERC20("UniswapV2", "UNIV2", 18), Math {
+contract UniswapV2Pair is ERC20, Math {
     uint256 constant MINIMUM_LIQUIDITY = 1000;
 
     address public token0;
@@ -19,6 +19,14 @@ contract UniswapV2Pair is ERC20("UniswapV2", "UNIV2", 18), Math {
 
     uint112 private reserve0;
     uint112 private reserve1;
+
+    constructor(
+        address token0_,
+        address token1_
+    ) ERC20("UniswapV2", "UNIV2", 18) {
+        token0 = token0_;
+        token1 = token1_;
+    }
 
     function mint() external {
         uint256 balance0 = IERC20(token0).balanceOf(address(this));
