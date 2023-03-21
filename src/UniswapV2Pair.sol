@@ -17,8 +17,8 @@ contract UniswapV2Pair is ERC20, Math {
     address public token0;
     address public token1;
 
-    uint112 private reserve0;
-    uint112 private reserve1;
+    uint112 private _reserve0;
+    uint112 private _reserve1;
 
     error InsufficientLiquidityMinted();
 
@@ -42,10 +42,13 @@ contract UniswapV2Pair is ERC20, Math {
         uint256 liquidity;
 
         if (totalSupply == 0) {
-            liquidity; // = ???
+            liquidity = Math.sqrt(amount0 * amount1) - MINIMUM_LIQUIDITY;
             _mint(address(0), MINIMUM_LIQUIDITY);
         } else {
-            liquidity;
+            liquidity = Math.min(
+                (amount0 * totalSupply) / _reserve0,
+                (amount1 * totalSupply) / _reserve1
+            );
         }
 
         if (liquidity <= 0) revert InsufficientLiquidityMinted();
@@ -58,9 +61,9 @@ contract UniswapV2Pair is ERC20, Math {
     }
 
     function _update(uint256 balance0, uint256 balance1) private {
-        reserve0 = uint112(balance0);
-        reserve1 = uint112(balance1);
+        _reserve0 = uint112(balance0);
+        _reserve1 = uint112(balance1);
 
-        emit Sync(reserve0, reserve1);
+        emit Sync(_reserve0, _reserve1);
     }
 }
