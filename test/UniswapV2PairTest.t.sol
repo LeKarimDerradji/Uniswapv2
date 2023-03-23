@@ -55,5 +55,37 @@ contract UniswapV2PairTest is Test {
         assertEq(pair.totalSupply(), 1 ether);
     }
 
-    function testSetNumber(uint256 x) public {}
+    function testMintWhenTheresLiquidity() public {
+        vm.startPrank(user1);
+        token0.transfer(address(pair), 1 ether);
+        token1.transfer(address(pair), 1 ether);
+
+        pair.mint();
+
+        token0.transfer(address(pair), 2 ether);
+        token1.transfer(address(pair), 2 ether);
+
+        pair.mint();
+
+        assertEq(pair.balanceOf(user1), 3 ether - 1000);
+        assertEq(pair.totalSupply(), 3 ether);
+        assertReserves(3 ether, 3 ether);
+    }
+
+    function testMintUnbalanced() public {
+        vm.startPrank(user1);
+        token0.transfer(address(pair), 1 ether);
+        token1.transfer(address(pair), 1 ether);
+
+        pair.mint(); // + 1 LP
+        assertEq(pair.balanceOf(user1), 1 ether - 1000);
+        assertReserves(1 ether, 1 ether);
+
+        token0.transfer(address(pair), 2 ether);
+        token1.transfer(address(pair), 1 ether);
+
+        pair.mint(); // + 1 LP
+        assertEq(pair.balanceOf(user1), 2 ether - 1000);
+        assertReserves(3 ether, 2 ether);
+    }
 }
