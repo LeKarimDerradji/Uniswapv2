@@ -60,6 +60,10 @@ contract UniswapV2Pair is ERC20, Math {
         emit Mint(msg.sender, amount0, amount1);
     }
 
+    function getReserves() public view returns (uint112, uint112, uint32) {
+        return (_reserve0, _reserve1, 0);
+    }
+
     function _update(uint256 balance0, uint256 balance1) private {
         _reserve0 = uint112(balance0);
         _reserve1 = uint112(balance1);
