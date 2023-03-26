@@ -65,7 +65,8 @@ contract UniswapV2Pair is ERC20, Math {
         uint256 balance1 = IERC20(token1).balanceOf(address(this));
         uint256 liquidity = balanceOf(msg.sender);
 
-        
+        uint256 amount0 = (liquidity * balance0) / totalSupply;
+        uint256 amount1 = (liquidity * balance1) / totalSupply;
     }
 
     function getReserves() public view returns (uint112, uint112, uint32) {
