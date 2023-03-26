@@ -60,6 +60,14 @@ contract UniswapV2Pair is ERC20, Math {
         emit Mint(msg.sender, amount0, amount1);
     }
 
+    function burn() external {
+        uint256 balance0 = IERC20(token0).balanceOf(address(this));
+        uint256 balance1 = IERC20(token1).balanceOf(address(this));
+        uint256 liquidity = balanceOf(msg.sender);
+
+        
+    }
+
     function getReserves() public view returns (uint112, uint112, uint32) {
         return (_reserve0, _reserve1, 0);
     }
