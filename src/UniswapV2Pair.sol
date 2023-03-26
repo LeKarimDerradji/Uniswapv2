@@ -21,6 +21,7 @@ contract UniswapV2Pair is ERC20, Math {
     uint112 private _reserve1;
 
     error InsufficientLiquidityMinted();
+    error InsufficientLiquidityBurned();
 
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
     event Sync(uint256 reserve0, uint256 reserve1);
@@ -63,10 +64,14 @@ contract UniswapV2Pair is ERC20, Math {
     function burn() external {
         uint256 balance0 = IERC20(token0).balanceOf(address(this));
         uint256 balance1 = IERC20(token1).balanceOf(address(this));
-        uint256 liquidity = balanceOf(msg.sender);
+        uint256 liquidity = this.balanceOf(msg.sender);
 
         uint256 amount0 = (liquidity * balance0) / totalSupply;
         uint256 amount1 = (liquidity * balance1) / totalSupply;
+
+        if (amount0 <= 0 || amount1 <= 0) revert InsufficientLiquidityBurned();
+
+        _burn(msg.sender, liquidity);
     }
 
     function getReserves() public view returns (uint112, uint112, uint32) {
