@@ -37,7 +37,6 @@ contract UniswapV2Pair is ERC20, Math {
     }
 
     function mint() external {
-        (uint112 reserve0_, uint112 reserve1_, ) = getReserves();
         uint256 balance0 = IERC20(token0).balanceOf(address(this));
         uint256 balance1 = IERC20(token1).balanceOf(address(this));
         uint256 amount0 = balance0 - _reserve0;
@@ -59,13 +58,12 @@ contract UniswapV2Pair is ERC20, Math {
 
         _mint(msg.sender, liquidity);
 
-        _update(balance0, balance1, reserve0_, reserve1_);
+        _update(balance0, balance1);
 
         emit Mint(msg.sender, amount0, amount1);
     }
 
     function burn() external {
-        (uint112 reserve0_, uint112 reserve1_, ) = getReserves();
         uint256 balance0 = IERC20(token0).balanceOf(address(this));
         uint256 balance1 = IERC20(token1).balanceOf(address(this));
         uint256 liquidity = this.balanceOf(msg.sender);
@@ -83,7 +81,7 @@ contract UniswapV2Pair is ERC20, Math {
         balance0 = IERC20(token0).balanceOf(address(this));
         balance1 = IERC20(token1).balanceOf(address(this));
 
-        _update(balance0, balance1, reserve0_, reserve1_);
+        _update(balance0, balance1);
 
         emit Burn(msg.sender, amount0, amount1);
     }
@@ -94,9 +92,7 @@ contract UniswapV2Pair is ERC20, Math {
 
     function _update(
         uint256 balance0,
-        uint256 balance1,
-        uint112 reserve0_,
-        uint112 reserve1_
+        uint256 balance1
     ) private {
         _reserve0 = uint112(balance0);
         _reserve1 = uint112(balance1);
