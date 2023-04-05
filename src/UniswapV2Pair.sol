@@ -23,6 +23,7 @@ contract UniswapV2Pair is ERC20, Math {
     error InsufficientLiquidityMinted();
     error InsufficientLiquidityBurned();
     error TransferFailed();
+    error InsufficientOutputAmount();
 
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
     event Sync(uint256 reserve0, uint256 reserve1);
@@ -86,14 +87,16 @@ contract UniswapV2Pair is ERC20, Math {
         emit Burn(msg.sender, amount0, amount1);
     }
 
+    function swap(uint256 amount0Out, uint256 amount1Out, address to) external {
+        if (amount0Out == 0 && amount1Out == 0)
+            revert InsufficientOutputAmount();
+    }
+
     function getReserves() public view returns (uint112, uint112, uint32) {
         return (_reserve0, _reserve1, 0);
     }
 
-    function _update(
-        uint256 balance0,
-        uint256 balance1
-    ) private {
+    function _update(uint256 balance0, uint256 balance1) private {
         _reserve0 = uint112(balance0);
         _reserve1 = uint112(balance1);
 
