@@ -25,6 +25,7 @@ contract UniswapV2Pair is ERC20, Math {
     error TransferFailed();
     error InsufficientOutputAmount();
     error InsufficientLiquidity();
+    error InvalidK();
 
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
     event Sync(uint256 reserve0, uint256 reserve1);
@@ -96,6 +97,12 @@ contract UniswapV2Pair is ERC20, Math {
 
         if (amount0Out > reserve0_ || amount1Out > reserve1_)
             revert InsufficientLiquidity();
+
+        uint256 balance0 = IERC20(token0).balanceOf(address(this)) - amount0Out;
+        uint256 balance1 = IERC20(token1).balanceOf(address(this)) - amount1Out;
+
+        if (balance0 * balance1 < uint256(reserve0_) * uint256(reserve1_))
+            revert InvalidK();
     }
 
     function getReserves() public view returns (uint112, uint112, uint32) {
