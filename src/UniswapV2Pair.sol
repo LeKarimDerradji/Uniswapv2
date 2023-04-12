@@ -103,6 +103,9 @@ contract UniswapV2Pair is ERC20, Math {
 
         if (balance0 * balance1 < uint256(reserve0_) * uint256(reserve1_))
             revert InvalidK();
+
+        if (amount0Out > 0) _safeTransfer(token0, to, amount0Out);
+        if (amount1Out > 0) _safeTransfer(token1, to, amount1Out);
     }
 
     function getReserves() public view returns (uint112, uint112, uint32) {
