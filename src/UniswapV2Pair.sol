@@ -30,6 +30,12 @@ contract UniswapV2Pair is ERC20, Math {
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
     event Sync(uint256 reserve0, uint256 reserve1);
     event Burn(address indexed sender, uint256 amount0, uint256 amount1);
+    event Swap(
+        address indexed sender,
+        uint256 amount0Out,
+        uint256 amount1Out,
+        address indexed to
+    );
 
     constructor(
         address token0_,
