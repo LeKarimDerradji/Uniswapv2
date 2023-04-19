@@ -88,4 +88,8 @@ contract UniswapV2PairTest is Test {
         assertEq(pair.balanceOf(user1), 2 ether - 1000);
         assertReserves(3 ether, 2 ether);
     }
+
+    function testSwap() public {
+        
+    }
 }
