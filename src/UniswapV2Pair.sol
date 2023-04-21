@@ -103,23 +103,34 @@ contract UniswapV2Pair is ERC20, Math {
         emit Burn(msg.sender, amount0, amount1);
     }
 
+    /// @notice This function allows users to swap tokens within the pair contract.
+    /// @param amount0Out The amount of token0 the user wants to receive.
+    /// @param amount1Out The amount of token1 the user wants to receive.
+    /// @param to The address that will receive the swapped tokens.
     function swap(uint256 amount0Out, uint256 amount1Out, address to) external {
+        // Ensure that at least one token amount is specified.
         if (amount0Out == 0 && amount1Out == 0)
             revert InsufficientOutputAmount();
 
+        // Get the current reserves for both tokens in the pair.
         (uint112 reserve0_, uint112 reserve1_, ) = getReserves();
 
+        // Ensure that there is enough liquidity to perform the swap.
         if (amount0Out > reserve0_ || amount1Out > reserve1_)
             revert InsufficientLiquidity();
 
+        // Get the current balance of both tokens in the pair, subtracting the amount being swapped.
         uint256 balance0 = IERC20(token0).balanceOf(address(this)) - amount0Out;
         uint256 balance1 = IERC20(token1).balanceOf(address(this)) - amount1Out;
 
+        // Ensure that the new balances maintain the constant product invariant.
         if (balance0 * balance1 < uint256(reserve0_) * uint256(reserve1_))
             revert InvalidK();
 
+        // Update the reserves with the new balances.
         _update(balance0, balance1, _reserve0, _reserve1);
 
+        // Transfer the swapped tokens to the recipient.
         if (amount0Out > 0) _safeTransfer(token0, to, amount0Out);
         if (amount1Out > 0) _safeTransfer(token1, to, amount1Out);
     }

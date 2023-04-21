@@ -30,8 +30,11 @@ contract UniswapV2PairTest is Test {
         token1 = new ERC20Mintable("Token B", "TKNB");
         pair = new UniswapV2Pair(address(token0), address(token1));
 
-        token0.mint(10 ether, user1);
-        token1.mint(10 ether, user1);
+        token0.mint(1000 ether, user1);
+        token1.mint(1000 ether, user1);
+        token0.mint(10 ether, user2);
+        token1.mint(10 ether, user2);
+
     }
 
     function assertReserves(
@@ -90,6 +93,14 @@ contract UniswapV2PairTest is Test {
     }
 
     function testSwap() public {
-        
+        vm.startPrank(user1);
+        token0.transfer(address(pair), 100 ether);
+        token1.transfer(address(pair), 100 ether);
+        pair.mint();
+        vm.stopPrank();
+
+        vm.prank(user2);
+       pair.swap(0 ether, 2 ether, address(user2));
+
     }
 }
